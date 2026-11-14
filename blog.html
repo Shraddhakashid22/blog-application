@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Details</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 30px auto; padding: 20px; background: #f4f6f9; }
+    .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .back { color: #007bff; text-decoration: none; font-weight: bold; display: inline-block; margin-bottom: 15px; }
+    .body-text { line-height: 1.8; margin-top: 20px; white-space: pre-line; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back">← Back to All Blogs</a>
+    <div id="detail">Loading blog details...</div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const id = new URLSearchParams(window.location.search).get('id');
+      const div = document.getElementById('detail');
+      const res = await fetch(`/api/blogs/${id}`);
+      if (!res.ok) {
+        div.innerHTML = '<p>Blog post not found.</p>';
+        return;
+      }
+      const blog = await res.json();
+      div.innerHTML = `
+        <h1>${blog.title}</h1>
+        <p><small>Author: <strong>${blog.author}</strong> • Date: ${new Date(blog.createdAt).toLocaleDateString()}</small></p>
+        <hr>
+        <div class="body-text">${blog.content}</div>
+      `;
+    });
+  </script>
+</body>
+</html>
